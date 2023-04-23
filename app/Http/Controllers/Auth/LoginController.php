@@ -41,14 +41,11 @@ class LoginController extends Controller
     }
 
     protected function authenticated(Request $request, $user) {
-        if ($user->is_active != 1) {
-            Auth::logout();
+        $credentials = $request->only('email', 'password');
 
-            return back()->with([
-                'account_deactivated' => 'Your account is deactivated! Please contact with Super Admin.'
-            ]);
+        if (Auth::attempt($credentials)) {
+            // Authentication passed...
+            return redirect()->intended(RouteServiceProvider::HOME);
         }
-
-        return next($request);
     }
 }
